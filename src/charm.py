@@ -37,7 +37,7 @@ class JujuControllerCharm(CharmBase):
         self._observe()
 
         self._stored.set_default(
-            last_bind_addresses=[],
+            latest_bind_addresses=[],
         )
 
         # TODO (manadart 2024-03-05): Get these at need.
@@ -70,7 +70,7 @@ class JujuControllerCharm(CharmBase):
         open(file_path, 'w+').close()
 
     def _on_collect_status(self, event: CollectStatusEvent):
-        if len(self._stored.last_bind_addresses) > 1:
+        if len(self._stored.latest_bind_addresses) > 1:
             event.add_status(BlockedStatus(
                 'multiple possible DB bind addresses; set a suitable dbcluster network binding'))
 
@@ -199,7 +199,7 @@ class JujuControllerCharm(CharmBase):
         Returns the db bind address.
         """
         ips = [str(ip) for ip in self.model.get_binding(relation).network.ingress_addresses]
-        self._stored.last_bind_addresses = ips
+        self._stored.latest_bind_addresses = ips
         ip = ips[0]
 
         if len(ips) > 1:
